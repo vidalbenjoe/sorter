@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "photo-sorter"
+version = "0.1.0"
+description = "Sort photos into folders by GPS coordinates from EXIF"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "Pillow>=10.0.0",
+    "piexif>=1.1.3",
+    "PyYAML>=6.0",
+    "Unidecode>=1.3.0",
+]
+
+[project.optional-dependencies]
+heic = ["pillow-heif"]
+
+[project.scripts]
+photo-sorter = "photo_sorter.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["photo_sorter*"]

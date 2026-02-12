@@ -1,0 +1,27 @@
+{
+  "base_output": "./sorted_photos",
+  "uncategorized_behavior": "folder",
+  "uncategorized_folder_name": "Uncategorized",
+  "match_radius_km": 0.5,
+  "locations": [
+    {
+      "name": "Taiwan101",
+      "point": { "lat": 25.0339, "lon": 121.5645 },
+      "radius_km": 0.3
+    },
+    {
+      "name": "YehliuGeopark",
+      "center": { "lat": 25.2878, "lon": 121.6906 },
+      "radius_km": 0.5
+    },
+    {
+      "name": "JiufenAndShifen",
+      "bounds": {
+        "min_lat": 25.04,
+        "max_lat": 25.12,
+        "min_lon": 121.76,
+        "max_lon": 121.85
+      }
+    }
+  ]
+}

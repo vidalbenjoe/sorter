@@ -1,0 +1,279 @@
+Metadata-Version: 2.4
+Name: photo-sorter
+Version: 0.1.0
+Summary: Sort photos into folders by GPS coordinates from EXIF
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+Requires-Dist: Pillow>=10.0.0
+Requires-Dist: piexif>=1.1.3
+Requires-Dist: PyYAML>=6.0
+Provides-Extra: heic
+Requires-Dist: pillow-heif; extra == "heic"
+
+# Photo Sorter
+
+A desktop tool that sorts photos into folders based on **GPS coordinates** from EXIF. Use it **with no config** and optional **reverse geocoding** so folder names are chosen for you, or provide a config file for full control.
+
+## Features
+
+- **Zero-config option**: Run without a config file. Photos are grouped by location; folder names are either coordinates (e.g. `25.034, 121.564`) or **automatic place names** if you enable `--geocode`.
+- **Optional reverse geocoding**: `--geocode` looks up place names (e.g. "Taipei 101, Taiwan") and uses them as folder names. Results are **cached locally**, so later runs stay fast and work offline.
+- **EXIF GPS**: Reads latitude/longitude from JPEG, PNG, HEIC (optional), TIFF.
+- **Optional config**: Define your own locations (point + radius or bounding box) and folder names when you want precise control.
+- **Safe by default**: **Copies** files unless you pass `--move`.
+- **Uncategorized handling**: Put photos with no match into an "Uncategorized" folder, or leave them in place (configurable).
+- **No overwrites**: If a file with the same name exists, the tool adds a suffix like `(1)`, `(2)`.
+- **CLI**: Simple arguments, clear logging and summary.
+
+## Requirements
+
+- **Python 3.10+**
+- Dependencies: Pillow, piexif, PyYAML (see below).
+
+## Installation
+
+### 1. Clone or copy the project
+
+```bash
+cd c:\Users\vidal\Documents\sorter
+```
+
+### 2. Create a virtual environment (recommended)
+
+```bash
+python -m venv .venv
+.venv\Scripts\activate   # Windows
+# source .venv/bin/activate   # macOS/Linux
+```
+
+### 3. Install dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+Optional: for **HEIC** (iPhone) support:
+
+```bash
+pip install pillow-heif
+```
+
+### 4. Install the package (so you can run `photo-sorter` from anywhere)
+
+```bash
+pip install -e .
+```
+
+Or run without installing:
+
+```bash
+python -m photo_sorter --input ... --output ... --config ...
+```
+
+## Usage
+
+### Recommended: zero effort (no config, automatic folder names)
+
+No config file and no manual folder names. Folder names come from **reverse geocoding** (cached after first use):
+
+```bash
+photo-sorter -i "C:\Users\Me\Pictures\Trip" -o "C:\Users\Me\Pictures\Sorted" --geocode
+```
+
+First run may be slower (one request per unique area, ~1/sec). Later runs use the cache and are fast and offline.
+
+### No config, coordinate-based folders (fully offline)
+
+If you prefer not to use the network, omit both config and `--geocode`. Folders will be named by coordinates (e.g. `25.034, 121.564`):
+
+```bash
+photo-sorter -i "C:\Users\Me\Pictures\Trip" -o "C:\Users\Me\Pictures\Sorted"
+```
+
+### With a config file (full control)
+
+When you want specific locations and custom folder names:
+
+```bash
+photo-sorter -i "C:\Users\Me\Pictures\Trip" -o "C:\Users\Me\Pictures\Sorted" -c "locations.json"
+```
+
+### Options
+
+| Option | Short | Description |
+|--------|--------|-------------|
+| `--input` | `-i` | **Required.** Source directory containing images. |
+| `--output` | `-o` | **Required.** Base output directory for sorted folders. |
+| `--config` | `-c` | Optional. Path to locations config (JSON or YAML). If omitted, folders are named by coordinates or by `--geocode`. |
+| `--geocode` | | Resolve folder names via reverse geocoding (Nominatim). Cached in output dir by default. |
+| `--geocode-cache` | | Path to geocode cache file (default: `.photo_sorter_geocode_cache.json` in output dir). |
+| `--move` | | Move files instead of copying (default: copy). |
+| `--verbose` | `-v` | Log each file decision. |
+
+### Examples
+
+**Best UX — no config, automatic place names:**
+
+```bash
+photo-sorter -i "D:\Photos\2024" -o "D:\Photos\ByLocation" --geocode
+```
+
+**No config, fully offline (folders named by coordinates):**
+
+```bash
+photo-sorter -i "D:\Photos\2024" -o "D:\Photos\ByLocation"
+```
+
+**With config and geocoding (config locations used first; geocode can still name uncategorized areas):**
+
+```bash
+photo-sorter -i "D:\Photos\2024" -o "D:\Photos\ByLocation" -c "locations.json" --geocode
+```
+
+**Move instead of copy:**
+
+```bash
+photo-sorter -i "D:\Photos\2024" -o "D:\Photos\ByLocation" --geocode --move
+```
+
+**Using the example config:**
+
+```bash
+photo-sorter -i "./my_photos" -o "./sorted_photos" -c "locations.example.json"
+```
+
+## Config file (optional)
+
+Use **JSON** or **YAML** when you want to define specific locations and folder names. Path: any file you pass to `--config`. You can skip the config and use auto mode (coordinates or `--geocode`) instead.
+
+### Structure
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `base_output` | string | Optional. Can be overridden by `--output` (CLI takes precedence in this implementation). |
+| `uncategorized_behavior` | string | `"folder"` (default) or `"leave_in_place"`. |
+| `uncategorized_folder_name` | string | Name of folder for non-matching photos when behavior is `"folder"`. Default: `"Uncategorized"`. |
+| `match_radius_km` | number | Default radius in km for point locations that don’t specify `radius_km`. Default: `0.5`. |
+| `locations` | array | List of location objects (see below). |
+
+### Location types
+
+**1. Point + radius** (nearest within radius)
+
+```json
+{
+  "name": "Taipei 101",
+  "point": { "lat": 25.0339, "lon": 121.5645 },
+  "radius_km": 0.3
+}
+```
+
+Or using `center` (same idea):
+
+```json
+{
+  "name": "Shifen Old Street",
+  "center": { "lat": 25.0426, "lon": 121.7762 },
+  "radius_km": 0.5
+}
+```
+
+**2. Bounding box** (inside rectangle)
+
+```json
+{
+  "name": "Jiufen",
+  "bounds": {
+    "min_lat": 25.108,
+    "max_lat": 25.112,
+    "min_lon": 121.843,
+    "max_lon": 121.848
+  }
+}
+```
+
+### Example config
+
+See **`locations.example.json`** in the project root. It defines three locations (Taipei 101, Shifen Old Street, Jiufen) and uncategorized behavior.
+
+## Output layout
+
+Under the directory you pass to `--output`, the tool creates one folder per location name and (if configured) an uncategorized folder:
+
+```
+/output/
+  Taipei 101/
+    IMG_001.jpg
+    IMG_002.jpg
+  Shifen Old Street/
+    IMG_003.jpg
+  Jiufen/
+    IMG_004.jpg
+  Uncategorized/
+    IMG_005.jpg   (no GPS or no matching location)
+```
+
+Duplicate names get a suffix: `IMG_001 (1).jpg`, etc.
+
+## Logging and summary
+
+The tool prints:
+
+- How many images were found and processed.
+- How many were **sorted** (copy or move) and into which folders.
+- How many were **skipped** (no GPS in EXIF).
+- How many were **left in place** (if `uncategorized_behavior` is `"leave_in_place"` and they didn’t match).
+- Any **errors** (e.g. read/write failures) with file names and messages.
+
+Use `--verbose` to see per-file decisions.
+
+## Robustness
+
+- **No EXIF / no GPS**: Image is skipped (counted) or sent to Uncategorized; the run continues.
+- **Corrupt EXIF**: Treated as no GPS; no crash.
+- **Per-file errors**: One bad file does not stop the whole run; errors are reported in the summary.
+- **Default is copy**: Originals are kept unless you use `--move`.
+
+## Running tests
+
+From the project root:
+
+```bash
+pip install -r requirements.txt
+pytest tests/ -v
+```
+
+Tests cover:
+
+- EXIF parsing and GPS extraction (including a JPEG with embedded GPS).
+- Location matching (bounds, point+radius, nearest).
+- Config loading (point, bounds, uncategorized options).
+- File operations (copy, move, unique names in a temp directory).
+
+## Project layout
+
+```
+sorter/
+  photo_sorter/
+    __init__.py
+    __main__.py      # python -m photo_sorter
+    cli.py           # CLI and orchestration
+    config.py        # Load/validate JSON or YAML config
+    exif_reader.py   # EXIF GPS extraction
+    geocode.py       # Optional reverse geocoding (cache + Nominatim)
+    location_matcher.py  # Match (lat, lon) to locations
+    file_ops.py      # Copy/move and unique paths
+  tests/
+    test_exif_reader.py
+    test_location_matcher.py
+    test_file_ops.py
+    test_config.py
+  locations.example.json
+  requirements.txt
+  pyproject.toml
+  README.md
+```
+
+## Reverse geocoding (optional)
+
+With `--geocode`, the tool uses Nominatim (OpenStreetMap) to resolve coordinates to place names. No API key is required. First run: about one request per distinct area; later runs use the cache and work offline. Use `--geocode-cache` to set the cache path; you can edit the cache file to override folder names. Config-based folder names still take precedence when you use a config file. Cached names are used in auto mode.

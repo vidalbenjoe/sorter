@@ -1,0 +1,2 @@
+[console_scripts]
+photo-sorter = photo_sorter.cli:main

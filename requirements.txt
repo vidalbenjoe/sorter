@@ -1,0 +1,8 @@
+# Photo Sorter - dependencies
+Pillow>=10.0.0
+piexif>=1.1.3
+PyYAML>=6.0
+Unidecode>=1.3.0
+
+# Dev / tests
+pytest>=7.0.0
