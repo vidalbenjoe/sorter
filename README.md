@@ -25,7 +25,7 @@ A desktop tool that sorts photos into folders based on **GPS coordinates** from 
 ### 1. Clone or copy the project
 
 ```bash
-cd c:\Users\vidal\Documents\sorter
+cd c:\..\Documents\sorter
 ```
 
 ### 2. Create a virtual environment (recommended)
