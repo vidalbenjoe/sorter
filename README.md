@@ -4,7 +4,7 @@ A desktop tool that sorts photos into folders based on **GPS coordinates** from 
 
 ## Features
 
-- **Single-word English folder names**: By default, folder names are one word, English only (e.g. `Taiwan101`, `YehliuGeopark`, `JiufenAndShifen`). Non-ASCII is transliterated. Use `--no-single-word` to keep original names with spaces.
+- **Single-word English folder names**: By default, folder names are one word, English only (e.g. `Taiwan101`, `YehliuGeopark`, `TokyoJapan`). Non-ASCII is transliterated. Use `--no-single-word` to keep original names with spaces.
 - **Nearby photos in one folder**: In auto mode, photos within a configurable distance (default 10 km) are grouped into the same folder. Use `--cluster-radius-km` to change this.
 - **Zero-config option**: Run without a config file. Photos are grouped by proximity; folder names are single-word (coordinates or place names with `--geocode`).
 - **Optional reverse geocoding**: `--geocode` looks up place names and converts them to single-word English. Results are **cached locally**, so later runs stay fast and work offline.
@@ -64,7 +64,7 @@ python -m photo_sorter --input ... --output ... --config ...
 
 ### Recommended: zero effort (no config, automatic place names)
 
-**No API key required.** Geocoding is **on by default**. Folder names come from Nominatim (OpenStreetMap) and are single-word English (e.g. `Taiwan101`, `YehliuGeopark`). Photos within 10 km are grouped into the same folder.
+**No API key required.** Geocoding is **on by default**. Folder names come from Nominatim (OpenStreetMap) and are single-word English (e.g. `CebuKawasanFalls`, `IlocosNorte`). Photos within 10 km are grouped into the same folder.
 
 ```bash
 photo-sorter -i "C:\path\to\photos" -o "C:\path\to\sorted"
@@ -101,7 +101,7 @@ photo-sorter -i "C:\Users\Me\Pictures\Trip" -o "C:\Users\Me\Pictures\Sorted" -c 
 | `--no-geocode` | | Use coordinate folder names (e.g. Lat25_03Lon121_56) instead of place names. |
 | `--geocode-cache` | | Path to geocode cache file (default: `photo_sorter_geocode_cache.json` in output dir). |
 | `--cluster-radius-km` | | In auto mode, put photos within this distance (km) in the same folder. Default: 10. |
-| `--no-single-word` | | Allow spaces in folder names. Default is single-word English only (e.g. Taiwan101, YehliuGeopark). |
+| `--no-single-word` | | Allow spaces in folder names. Default is single-word English only (e.g. LunetaPark, NationalMuseum). |
 | `--move` | | Move files instead of copying (default: copy). |
 | `--verbose` | `-v` | Log each file decision. |
 
@@ -151,7 +151,7 @@ Use **JSON** or **YAML** when you want to define specific locations and folder n
 | `match_radius_km` | number | Default radius in km for point locations that don’t specify `radius_km`. Default: `0.5`. |
 | `locations` | array | List of location objects (see below). |
 
-Use **single-word English** names in the config (e.g. `Taiwan101`, `YehliuGeopark`, `JiufenAndShifen`). If you use spaces (e.g. "Shifen Old Street"), the tool converts them to single-word by default (e.g. `ShifenOldStreet`) unless you pass `--no-single-word`.
+Use **single-word English** names in the config (e.g. `Taiwan101`, `YehliuGeopark`, `TokyoJapan`). If you use spaces (e.g. "Shifen Old Street"), the tool converts them to single-word by default (e.g. `ShifenOldStreet`) unless you pass `--no-single-word`.
 
 ### Location types
 
@@ -159,7 +159,7 @@ Use **single-word English** names in the config (e.g. `Taiwan101`, `YehliuGeopar
 
 ```json
 {
-  "name": "Taiwan101",
+  "name": "Manila",
   "point": { "lat": 25.0339, "lon": 121.5645 },
   "radius_km": 0.3
 }
@@ -169,7 +169,7 @@ Or using `center` (same idea):
 
 ```json
 {
-  "name": "YehliuGeopark",
+  "name": "Binondo",
   "center": { "lat": 25.2878, "lon": 121.6906 },
   "radius_km": 0.5
 }
@@ -179,7 +179,7 @@ Or using `center` (same idea):
 
 ```json
 {
-  "name": "JiufenAndShifen",
+  "name": "Luneta",
   "bounds": {
     "min_lat": 25.04,
     "max_lat": 25.12,
@@ -199,12 +199,12 @@ Under the directory you pass to `--output`, the tool creates one folder per loca
 
 ```
 /output/
-  Taiwan101/
+  Davao/
     IMG_001.jpg
     IMG_002.jpg
-  YehliuGeopark/
+  SamalIsland/
     IMG_003.jpg
-  JiufenAndShifen/
+  GovGen/
     IMG_004.jpg
   Skipped/
     IMG_005.jpg   (no GPS in EXIF)
@@ -277,7 +277,7 @@ sorter/
 
 ## Reverse geocoding (default on)
 
-**You do not need an API key.** The tool uses Nominatim (OpenStreetMap), which is free. Geocoding is **on by default** so you get place names (e.g. Taiwan101, YehliuGeopark) unless you pass `--no-geocode`. Results are cached in the output dir; first run does one request per area (~1/sec), later runs use the cache and work offline.
+**You do not need an API key.** The tool uses Nominatim (OpenStreetMap), which is free. Geocoding is **on by default** so you get place names (e.g. Binondo, LunetaPark) unless you pass `--no-geocode`. Results are cached in the output dir; first run does one request per area (~1/sec), later runs use the cache and work offline.
 
 **Troubleshooting:**
 - **Numeric folder names (like `32054`)**: The geocoding API may have returned a postal code, or your cache has bad values. The tool now automatically filters these out. **Solution**: Delete the cache file (`photo_sorter_geocode_cache.json` in your output directory) and run again.
