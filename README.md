@@ -25,7 +25,7 @@ A desktop tool that sorts photos into folders based on **GPS coordinates** from 
 ### 1. Clone or copy the project
 
 ```bash
-cd c:\Users\vidal\Documents\sorter
+cd c:\..\Documents\sorter
 ```
 
 ### 2. Create a virtual environment (recommended)
@@ -288,3 +288,5 @@ sorter/
 - **Where is the cache?** It’s in the **output folder** you pass to `-o`, e.g. `C:\Users\You\Documents\sortsort\photo_sorter_geocode_cache.json`. It’s a normal file (no leading dot), so it’s visible in File Explorer.
 
 Config-based folder names still take precedence when you use a config file. Cached names are used in auto mode.
+
+buymeacoffee.com/benjoe22d
