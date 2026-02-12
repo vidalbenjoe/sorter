@@ -289,4 +289,14 @@ sorter/
 
 Config-based folder names still take precedence when you use a config file. Cached names are used in auto mode.
 
+## License
+
+Copyright (c) 2026 Benjoe Vidal
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Contributing
+
+Contributions are welcome! Feel free to open issues or submit pull requests.
+
 buymeacoffee.com/benjoe22d

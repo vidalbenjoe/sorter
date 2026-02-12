@@ -2,6 +2,9 @@
 Optional reverse geocoding: resolve (lat, lon) to a place name using a local
 cache and Nominatim (OpenStreetMap) when cache misses. Keeps UX simple without
 requiring the user to manually name folders.
+
+Copyright (c) 2026 Benjoe Vidal
+Licensed under the MIT License.
 """
 
 import json
@@ -245,7 +248,7 @@ def _fetch_nominatim(lat: float, lon: float) -> tuple[Optional[str], Optional[di
                         elif key == "village":
                             village_name = name
                 
-                # Collect town and city_district (common in Taiwan)
+                # Collect town and city_district 
                 town_name = None
                 city_district_name = None
                 for key in ["town", "city_district"]:
@@ -340,7 +343,7 @@ def get_place_name(
     - Otherwise return a coordinate-based fallback.
 
     If single_word_english is True, the result is converted to PascalCase ASCII
-    (e.g. Taiwan101, YehliuGeopark). cache_precision can be used when grouping
+    (e.g. UPDiliman, TIPQC). cache_precision can be used when grouping
     by cluster (e.g. 1 for ~11 km) so the same cache key is used for the cluster.
     """
     key = _cache_key(lat, lon, cache_precision)

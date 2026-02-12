@@ -1,6 +1,9 @@
 """
 Read EXIF metadata and extract GPS latitude/longitude from image files.
 Handles missing/corrupt EXIF and multiple image formats.
+
+Copyright (c) 2026 Benjoe Vidal
+Licensed under the MIT License.
 """
 
 from pathlib import Path

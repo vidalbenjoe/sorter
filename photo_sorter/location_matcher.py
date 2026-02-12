@@ -1,5 +1,8 @@
 """
 Match (latitude, longitude) to user-defined locations (point+radius or bounding box).
+
+Copyright (c) 2026 Benjoe Vidal
+Licensed under the MIT License.
 """
 
 import math

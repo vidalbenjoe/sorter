@@ -1,5 +1,8 @@
 """
 Create destination folders and copy or move image files without overwriting.
+
+Copyright (c) 2026 Benjoe Vidal
+Licensed under the MIT License.
 """
 
 import shutil

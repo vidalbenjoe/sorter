@@ -1,6 +1,9 @@
 """
 Command-line interface for the photo sorter.
 Orchestrates EXIF reading, location matching, and file operations.
+
+Copyright (c) 2026 Benjoe Vidal
+Licensed under the MIT License.
 """
 
 import argparse
@@ -49,8 +52,8 @@ def run(
     into output_dir under location-named folders.
 
     When config has no locations (auto mode), photos are grouped by proximity
-    (cluster_radius_km) and folder names are single-word English (e.g. Taiwan101,
-    YehliuGeopark) unless single_word_english=False.
+    (cluster_radius_km) and folder names are single-word English (e.g. SJDMBulacan,
+    QuezonCityUP) unless single_word_english=False.
 
     Returns a summary dict: total, sorted, skipped_no_gps, skipped_no_match_left,
     skipped_other, errors (list of (path, error_message)).
@@ -96,7 +99,7 @@ def run(
     if auto_mode:
         if geocode:
             log.info(
-                "Geocoding: ON (Nominatim/OpenStreetMap — no API key required). Folder names will be place names (e.g. Taiwan101, Sanzhangli)."
+                "Geocoding: ON (Nominatim/OpenStreetMap — no API key required). Folder names will be place names."
             )
             if geocode_cache_path is None:
                 log.error("Geocoding is ON but no cache path set. Place names may not work.")
@@ -360,7 +363,7 @@ def main(argv: Optional[list[str]] = None) -> int:
     parser.add_argument(
         "--no-single-word",
         action="store_true",
-        help="Use original folder names (spaces allowed). Default is single-word English (e.g. Taiwan101, YehliuGeopark).",
+        help="Use original folder names (spaces allowed). Default is single-word English .",
     )
     parser.add_argument(
         "--move",

@@ -7,6 +7,10 @@ name = "photo-sorter"
 version = "0.1.0"
 description = "Sort photos into folders by GPS coordinates from EXIF"
 readme = "README.md"
+license = {text = "MIT"}
+authors = [
+    {name = "Benjoe Vidal"}
+]
 requires-python = ">=3.10"
 dependencies = [
     "Pillow>=10.0.0",

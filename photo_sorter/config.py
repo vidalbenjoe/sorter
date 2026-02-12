@@ -1,5 +1,8 @@
 """
 Load and validate the locations config (JSON or YAML).
+
+Copyright (c) 2026 Benjoe Vidal
+Licensed under the MIT License.
 """
 
 from dataclasses import dataclass, field
